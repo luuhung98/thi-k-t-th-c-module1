@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css">
+
+</head>
+<body>
+    <div id="containerinput">
+        <h2>Add Employee</h2>
+        <label for="">Employee Code</label><br>
+        <input type="text" id="inemployeecode"><br>
+        <label for="">Employee Name</label><br>
+        <input type="text" id="inemployeename"><br>
+        <label for="">Email</label><br>
+        <input type="text" id="inemail"><br>
+        <button onclick="addInfor()">Add Employee</button><br>
+
+    </div>
+    <div id="containertable">
+
+        <table id="table">
+            <tr>
+                <th d="stt">STT</th>
+                <th id="employeecode">Employee code</th>
+                <th id="employeename">Employee name</th>
+                <th id="email">Email</th>
+                <th id="option">Option</th>
+            </tr>
+            <tr id="showInfor">
+                <td id="stt"></td>
+                <td id="employeecode"></td>
+                <td id="employeename"></td>
+                <td id="email"></td>
+                <td id="option"></td>
+            </tr>
+        </table>
+
+    </div>
+    <script>
+        //khai bao
+        let employers=JSON.parse(localStorage.getItem("employers"))||[];
+        function addInfor(){
+            let valueCode=document.getElementById("inemployeecode").value;
+            let valueName=document.getElementById("inemployeename").value;
+            let valueEmail=document.getElementById("inemail").value;
+            if(valueCode==""){
+                alert("Mã nhân viên không được để trống");
+            }else if(valueName==""){
+                alert("Tên nhân viên không được để trống");
+            }else if(valueEmail==""){
+                alert("Email không được để trống");
+            }
+            let employee={
+                employeeCode:valueCode,
+                employeeName:valueName,
+                email:valueEmail,
+                id:Math.random()
+            };
+            employers.push(employee);
+            // let oldemployee;
+            // for (let i = 0; i < employers.length; i++) {
+            //     if(oldemployee.employeeCode===employers[i].employeeCode||oldemployee.email===employers[i].email){
+            //         alert("Mã nhân viên hoặc email của bạn bị trùng nhau");
+            //     }               
+            // }
+            localStorage.setItem("employers",JSON.stringify(employers));
+            let oldemployee;
+            // for (let i = 0; i < employers.length; i++) {
+            //     if(oldemployee.employeeCode===employers[i].employeeCode||oldemployee.email===employers[i].email){
+            //         alert("Mã nhân viên hoặc email của bạn bị trùng nhau");
+            //     }               
+            // }
+            renderInfor();
+            
+        }
+        function renderInfor(){
+            let text="";
+            for (let i = 0; i < employers.length; i++) {
+                text+=
+                `
+                    <td>${i}</td>
+                    <td>${employers[i].employeeCode}</td>
+                    <td>${employers[i].employeeName}</td>
+                    <td>${employers[i].email}</td>
+                    <td>
+                    <button onclick="updateInfor(${employers[i].id})">Sửa</button>
+                    <button onclick="deleteInfor(${employers[i].id})">Xoá</button>
+                    </td>
+                    <br>
+
+                `
+            }
+            document.getElementById("showInfor").innerHTML=text;
+        }
+        function deleteInfor(dt){
+            let choise=confirm("Bạn có muốn xoá");
+            if(choise==true){
+                for (let i = 0; i < employers.length; i++) {
+                    if(employers[i].employeeCode===dt){
+                    employers.splice(i,1);
+                    localStorage.setItem("employers",JSON.stringify(employers));
+                    renderInfor();
+                    break;
+                    }
+                }               
+            }
+            
+        }
+        deleteInfor();
+        function updateInfor(u){
+            edittext="";
+            for (let i = 0; i < employers.length; i++) {
+                    if(employers[i].employeeCode==u){
+                    edittext+=
+                    `
+                      <h2>Add Employee</h2>
+                      <label for="">Employee Code</label><br>
+                      <input type="text" id="inemployeecode">${employers[i].employeeCode}<br>
+                      <label for="">Employee Name</label><br>
+                      <input type="text" id="inemployeename">${employers[i].employeeName}<br>
+                      <label for="">Email</label><br>
+                      <input type="text" id="inemail">${employers[i].email}<br>
+                      <button onclick="addInfor()">Update Employee</button><br>
+                    `
+                    };
+                    localStorage.setItem("employers",JSON.stringify(employers));
+                    document.getElementById("containerinput").innerHTML=edittext;
+                    break;
+                    
+            } 
+            renderInfor();           
+        }
+
+    </script>
+</body>
+</html>
